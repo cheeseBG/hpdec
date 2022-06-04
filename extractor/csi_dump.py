@@ -126,17 +126,3 @@ def ping(nicname):
 
 if __name__ == '__main__':
     sniffing('wlan0')
-    # CSI Extractor Interface
-    # csinicname = 'wlan1'
-    #
-    # # Ping dedicated interface
-    # pingnicname = 'wlan0'
-    #
-    # sniffing = Process(target=sniffing, args=(csinicname, ))
-    # ping = Process(target=ping, args=(pingnicname, ))
-    #
-    # sniffing.start()
-    # ping.start()
-    #
-    # sniffing.join()
-    # ping.join()
