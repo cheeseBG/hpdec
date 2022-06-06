@@ -1,16 +1,25 @@
 '''
     Extract raw CSI data (complex number)
 '''
-
+import os
 import pcap
 import dpkt
 import keyboard
 import pandas as pd
 import numpy as np
-import os
+import keras
+import joblib
 from datetime import datetime
 import time
 
+# Load pretrained model
+model = keras.models.load_model('./pretrained/cnn1d_model')
+model.summary()
+
+# Load scaler
+print('======> Load scaler')
+scaler = joblib.load('./pretrained/std_scaler.pkl')
+print('======> Success')
 
 BANDWIDTH = 20
 
