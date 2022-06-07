@@ -2,9 +2,13 @@ import keras
 import numpy as np
 import joblib
 
+import tensorflow as tf
+
 # Load pretrained model
 model = keras.models.load_model('./pretrained/cnn1d_model')
 model.summary()
+
+
 
 # Load scaler
 scaler = joblib.load('./pretrained/std_scaler.pkl')
@@ -60,6 +64,16 @@ test = [[-0.55441742],
  [-0.4978616 ],
  [-0.64792856]]
 test = np.array(test)
-test = scaler.transform(test)
+#test = scaler.transform(test)
 test = test.reshape(-1, 50, 1)
-print(model.predict(test))
+
+# Test the model on random input data.
+
+interpreter.set_tensor(input_details[0]['index'], test)
+
+interpreter.invoke()
+
+# The function `get_tensor()` returns a copy of the tensor data.
+# Use `tensor()` in order to get a pointer to the tensor.
+output_data = interpreter.get_tensor(output_details[0]['index'])
+print(output_data)

@@ -7,13 +7,13 @@ import dpkt
 import keyboard
 import pandas as pd
 import numpy as np
-import keras
+import tensorflow as tf
 import joblib
 from datetime import datetime
 import time
 
 # Load pretrained model
-model = keras.models.load_model('./pretrained/cnn1d_model')
+model = tf.keras.models.load_model('./pretrained/cnn1d_model')
 model.summary()
 
 # Load scaler
