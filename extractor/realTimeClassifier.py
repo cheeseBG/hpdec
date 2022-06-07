@@ -21,6 +21,13 @@ print('======> Load scaler')
 scaler = joblib.load('./pretrained/std_scaler.pkl')
 print('======> Success')
 
+null_pilot_col_list = ['_' + str(x + 32) for x in [-32, -31, -30, -29, -21, -7, 0, 7, 21, 29, 30, 31]]
+
+# pacekt count
+P_COUNT = 0
+WINDOW_SIZE = 50
+SUB_NUM = '_30'
+
 BANDWIDTH = 20
 
 # number of subcarrier
@@ -46,6 +53,7 @@ def sniffing(nicname):
     before_ts = 0.0
 
     for ts, pkt in sniffer:
+        P_COUNT += 1
         if int(ts) == int(before_ts):
             cur_ts = truncate(ts, 1)
             bef_ts = truncate(before_ts, 1)
@@ -53,7 +61,6 @@ def sniffing(nicname):
             if cur_ts == bef_ts:
                 before_ts = ts
                 continue
-
 
         eth = dpkt.ethernet.Ethernet(pkt)
         ip = eth.data
@@ -89,9 +96,8 @@ def sniffing(nicname):
             csi_np[:1, ::2] + 1.j * csi_np[:1, 1::2], axes=(1,)
         )
 
-        csi_df = pd.DataFrame(csi_cmplx)
-        csi_df.insert(0, 'mac', mac)
-        csi_df.insert(1, 'time', ts)
+        # Convert complex number to amplitude then make dataframe
+        csi_df = pd.DataFrame(np.abs(csi_cmplx))
 
         # Rename Subcarriers Column Name
         columns = {}
@@ -100,20 +106,62 @@ def sniffing(nicname):
 
         csi_df.rename(columns=columns, inplace=True)
 
-        # Save dataframe to SQL
+        '''
+            1. Remove null & pilot subcarrier
+            2. Before input the data, scaling with pre-fitted scaler
+            3. Keep window_size 50. If 25 packets changed, choose 1 subcarrier and run model.
+        '''
+        # 1. Remove null & pilot subcarrier
+        csi_df.drop(null_pilot_col_list, axis=1, inplace=True)
+
+        # 2. Before input the data, scaling with pre-fitted scaler
+        csi_data = scaler.transform(csi_df.iloc[:, 2:])
+
+        # 3. Keep window_size 50. If 25 packets changed, choose 1 subcarrier and run model
         try:
-            mac_dict[mac] = pd.concat([mac_dict[mac], csi_df], ignore_index=True)
+            mac_dict[mac] = pd.concat([mac_dict[mac], csi_data], ignore_index=True)
+
+            if len(mac_dict[mac]) == 50 and P_COUNT == 50:
+                c_data = np.array(mac_dict[mac][SUB_NUM])
+                c_data = c_data.reshape(-1, 50, 1)
+                print('Predict result: {}'.format(model.predict(c_data)))
+
+                # Drop first row
+                mac_dict[mac].drop(0, inplace=True)
+                mac_dict[mac].reset_index(drop=True, inplace=True)
+
+                P_COUNT = 0
+
+            elif len(mac_dict[mac]) == 50 and P_COUNT == 25:
+
+                c_data = np.array(mac_dict[mac][SUB_NUM])
+                c_data = c_data.reshape(-1, 50, 1)
+                print('Predict result: {}'.format(model.predict(c_data)))
+
+                # Drop first row
+                mac_dict[mac].drop(0, inplace=True)
+                mac_dict[mac].reset_index(drop=True, inplace=True)
+
+                P_COUNT = 0
+
+            elif len(mac_dict[mac]) == 50:
+                # Drop first row
+                mac_dict[mac].drop(0, inplace=True)
+                mac_dict[mac].reset_index(drop=True, inplace=True)
+
+
+
         except Exception as e:
             print('Error', e)
 
         before_ts = ts
 
-        if keyboard.is_pressed('s'):
-            print("Stop Collecting...")
-
-            for mac_address in mac_dict.keys():
-                mac_dict[mac_address].to_csv('csi_{}_{}MHz.csv'.format(mac_address, bandwidth), index=False)
-            break
+        # if keyboard.is_pressed('s'):
+        #     print("Stop Collecting...")
+        #
+        #     for mac_address in mac_dict.keys():
+        #         mac_dict[mac_address].to_csv('csi_{}_{}MHz.csv'.format(mac_address, bandwidth), index=False)
+        #     break
 
 
 def ping(nicname):
