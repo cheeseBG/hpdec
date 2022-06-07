@@ -1,11 +1,22 @@
-#Todo: 비디오 저장, frame 마다 detection counting, -> log로 남기기
-
 import numpy as np
 import cv2
 import os
 import imutils
 import time
+import logging
 
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
+# handler 생성 (stream, file)
+streamHandler = logging.StreamHandler()
+fileHandler = logging.FileHandler('./log/test.log')
+
+# logger instance에 handler 설정
+logger.addHandler(streamHandler)
+logger.addHandler(fileHandler)
+logger.setLevel(level=logging.DEBUG)
 
 NMS_THRESHOLD = 0.3
 MIN_CONFIDENCE = 0.2
@@ -30,8 +41,7 @@ def pedestrian_detection(image, model, layer_name, personidz=0):
 	(H, W) = image.shape[:2]
 	results = []
 
-	blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416),
-		swapRB=True, crop=False)
+	blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416), swapRB=True, crop=False)
 	model.setInput(blob)
 	layerOutputs = model.forward(layer_name)
 
@@ -76,7 +86,6 @@ def pedestrian_detection(image, model, layer_name, personidz=0):
 	return results
 
 
-
 labelsPath = "coco.names"
 LABELS = open(labelsPath).read().strip().split("\n")
 
@@ -105,14 +114,26 @@ if fps == 0.0:
 time_per_frame_video = 1 / fps
 last_time = time.perf_counter()
 
+
 while True:
+	# 현재 시간에 대해 사람이 감지됐는지 확인
+	now = datetime.now()
 	(grabbed, image) = cap.read()
 
 	if not grabbed:
 		break
+
 	image = imutils.resize(image, width=700)
-	results = pedestrian_detection(image, model, layer_name,
-		personidz=LABELS.index("person"))
+	results = pedestrian_detection(image, model, layer_name, personidz=LABELS.index("person"))
+
+	# 사람이 검출되는 경우와 아닌 경우 나눠서 logging
+	if results:
+		state = "{} Detect".format(now)
+		logger.info(state)
+	else:
+		state = "{} None".format(now)
+		logger.info(state)
+
 
 	for res in results:
 		cv2.rectangle(image, (res[1][0],res[1][1]), (res[1][2],res[1][3]), (0, 255, 0), 2)

@@ -63,14 +63,14 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
             # 1. Remove null & pilot subcarrier
             csi_df.drop(null_pilot_col_list, axis=1, inplace=True)
 
+            new_columns = csi_df.columns
+
             # 2. Before input the data, scaling with pre-fitted scaler
-            #csi_data = scaler.transform(csi_df)
-            csi_data = csi_df
+            csi_data = scaler.transform(csi_df)
 
             # 3. Keep window_size 50. If 25 packets changed, choose 1 subcarrier and run model
             try:
-                mac_dict[mac] = pd.concat([mac_dict[mac], csi_data], ignore_index=True)
-
+                mac_dict[mac] = pd.concat([mac_dict[mac], pd.DataFrame(csi_data, columns=new_columns)], ignore_index=True)
                 if len(mac_dict[mac]) == 50 and P_COUNT == 50:
                     c_data = np.array(mac_dict[mac][SUB_NUM].to_list())
                     c_data = c_data.reshape(-1, 50, 1)
