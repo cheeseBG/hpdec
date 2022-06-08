@@ -2,12 +2,12 @@ import os
 import datetime
 import pandas as pd
 
-log_path = './yolo/log'
+log_path = './yolo/log/test3'
 log_files = os.listdir(log_path)
 
 SAMPLE_TIME = 10
-START_TIME = '2022-06-08 13:34:00'
-END_TIME = '2022-06-08 14:10:10'
+START_TIME = '2022-06-08 19:06:00'
+END_TIME = '2022-06-08 19:23:00'
 
 columns = ['sample_num', 'detect', 'total']
 
@@ -24,7 +24,7 @@ for log in log_files:
             del lines[-1]
 
         start_time = datetime.datetime.strptime(START_TIME, '%Y-%m-%d %H:%M:%S')
-        end_time = datetime.datetime.strptime('2022-06-08 13:34:10', '%Y-%m-%d %H:%M:%S')
+        end_time = datetime.datetime.strptime(str(start_time + datetime.timedelta(seconds=SAMPLE_TIME)), '%Y-%m-%d %H:%M:%S')
 
         count = 0
         detect = 0
@@ -59,4 +59,4 @@ for log in log_files:
                     if is_detect == 'Detect':
                         detect += 1
 
-    df.to_excel('./data/{}_data.xlsx'.format(log), index=False)
+    df.to_excel('./data/{}_data.xlsx'.format(log[:-4]), index=False)
