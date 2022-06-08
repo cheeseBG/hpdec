@@ -124,6 +124,10 @@ while True:
 		break
 
 	image = imutils.resize(image, width=700)
+
+	# 밝기 어둡게
+	image = cv2.subtract(image, (100, 100, 100))
+
 	results = pedestrian_detection(image, model, layer_name, personidz=LABELS.index("person"))
 
 	# 사람이 검출되는 경우와 아닌 경우 나눠서 logging
