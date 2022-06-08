@@ -8,13 +8,13 @@ import pandas as pd
 from matplotlib.animation import FuncAnimation
 from matplotlib.artist import Artist
 
-HOST = '192.9.203.146'
+HOST = '172.16.225.174'
 PORT = 9010
 
 global P_COUNT
 P_COUNT = 0
 WINDOW_SIZE = 50
-SUB_NUM = '_30'
+SUB_NUM = '_5'
 
 mac = 'dca6328e1dcb'
 

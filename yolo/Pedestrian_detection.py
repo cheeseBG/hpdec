@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 # handler 생성 (stream, file)
 streamHandler = logging.StreamHandler()
-fileHandler = logging.FileHandler('./log/test.log')
+fileHandler = logging.FileHandler('log/cf01.log')
 
 # logger instance에 handler 설정
 logger.addHandler(streamHandler)
@@ -19,7 +19,7 @@ logger.addHandler(fileHandler)
 logger.setLevel(level=logging.DEBUG)
 
 NMS_THRESHOLD = 0.3
-MIN_CONFIDENCE = 0.2
+MIN_CONFIDENCE = 0.1
 
 
 def draw_text(img, text, x, y):
@@ -126,7 +126,7 @@ while True:
 	image = imutils.resize(image, width=700)
 
 	# 밝기 어둡게
-	image = cv2.subtract(image, (100, 100, 100))
+	image = cv2.subtract(image, (120, 120, 120, 0))
 
 	results = pedestrian_detection(image, model, layer_name, personidz=LABELS.index("person"))
 
