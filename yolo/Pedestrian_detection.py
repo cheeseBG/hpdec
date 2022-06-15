@@ -12,7 +12,7 @@ def yolo_detect(share_value):
 
 	# handler 생성 (stream, file)
 	streamHandler = logging.StreamHandler()
-	fileHandler = logging.FileHandler('./yolo/log/testing.log')
+	fileHandler = logging.FileHandler('./yolo/log/false_detect.log')
 
 	# logger instance에 handler 설정
 	logger.addHandler(streamHandler)
@@ -140,12 +140,12 @@ def yolo_detect(share_value):
 		results = pedestrian_detection(image, model, layer_name, MIN_CONFIDENCE, personidz=LABELS.index("person"))
 
 		# # 사람이 검출되는 경우와 아닌 경우 나눠서 logging
-		# if results:
-		# 	state = "{} Detect".format(now)
-		# 	logger.info(state)
-		# else:
-		# 	state = "{} None".format(now)
-		# 	logger.info(state)
+		if results:
+			state = "{} Detect {}".format(now, MIN_CONFIDENCE)
+			logger.info(state)
+		else:
+			state = "{} None {}".format(now, MIN_CONFIDENCE)
+			logger.info(state)
 
 		for res in results:
 			cv2.rectangle(image, (res[1][0],res[1][1]), (res[1][2],res[1][3]), (0, 255, 0), 2)

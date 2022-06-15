@@ -8,13 +8,13 @@ import pandas as pd
 
 
 def realTimeHPDec(share_value):
-    HOST = '192.9.203.146'
+    HOST = '192.168.0.130'
     PORT = 9010
 
     global P_COUNT
     P_COUNT = 0
     WINDOW_SIZE = 50
-    SUB_NUM = '_5'
+    SUB_NUM = '_30'
 
     mac = 'dca6328e1dcb'
 
@@ -26,7 +26,7 @@ def realTimeHPDec(share_value):
 
     # Load pretrained model
     print('======> Load model')
-    model = keras.models.load_model('./server/pretrained/cnn1d_model')
+    model = keras.models.load_model('./server/pretrained/continual_cnn1d_model')
     model.summary()
     print('======> Success')
 
