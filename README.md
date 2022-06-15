@@ -1,2 +1,2 @@
-# ppcc
-real-time Person Presence Classification using CSI
+# hpdec
+real-time Human Presence DEtection using CSI
