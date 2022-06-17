@@ -12,7 +12,7 @@ def yolo_detect(share_value):
 
 	# handler 생성 (stream, file)
 	streamHandler = logging.StreamHandler()
-	fileHandler = logging.FileHandler('./yolo/log/false_detect.log')
+	fileHandler = logging.FileHandler('./yolo/log/0617_witcam.log')
 
 	# logger instance에 handler 설정
 	logger.addHandler(streamHandler)
@@ -127,7 +127,7 @@ def yolo_detect(share_value):
 		image = imutils.resize(image, width=700)
 
 		# 밝기 어둡게
-		#image = cv2.subtract(image, (120, 120, 120, 0))
+		image = cv2.subtract(image, (100, 100, 100, 0))
 
 		thres = share_value.recv()
 
