@@ -6,7 +6,7 @@ from keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from keras.layers import Embedding, LSTM, GlobalMaxPooling1D, Dense, MaxPooling1D, BatchNormalization, Dropout
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from train.preprocessing.dataloader import DataLoader
+from train import DataLoader
 from numpy import array
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler

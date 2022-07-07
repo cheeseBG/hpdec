@@ -7,7 +7,7 @@ from tensorflow.keras.optimizers import Adam
 from keras.models import Sequential
 from keras.layers import Embedding, Dropout, Conv1D, GlobalMaxPooling1D, Dense, MaxPooling1D, BatchNormalization
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from train.preprocessing.dataloader import DataLoader
+from preprocessing import DataLoader
 from numpy import array
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -20,7 +20,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 TIMESTEMP = 10
 MAX_EPOCHS = 100
 
-dataPath = '../data/sample'
+dataPath = '../../data/sample'
 
 # null_pilot_col_list = ['_' + str(x + 32) for x in [-32, -31, -30, -29, -21, -7, 0, 7, 21, 29, 30, 31]]
 # total_sub = list(np.arange(0, 63, 1))
@@ -58,14 +58,14 @@ csi_data, csi_label = csi_df.iloc[:, :-1], csi_df.iloc[:, -1]
 X_train, X_test, y_train, y_test = train_test_split(csi_data, csi_label, test_size=0.2, random_state=42)
 X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=0.1, random_state=42)
 
-# # Scaling
-# standardizer = StandardScaler()
-# X_train = standardizer.fit_transform(X_train)
-# X_valid = standardizer.transform(X_valid)
-# X_test = standardizer.transform(X_test)
+# Scaling
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_valid = scaler.transform(X_valid)
+X_test = scaler.transform(X_test)
 
-# # Save Scaler
-# joblib.dump(scaler, './std_scaler.pkl')
+# Save Scaler
+joblib.dump(scaler, '../../pretrained/std_scaler.pkl')
 
 # Change to ndarray
 # X_train = np.array(X_train)
@@ -125,7 +125,8 @@ acc = model.evaluate(X_test, y_test)[1]
 print("\n 테스트 정확도: %.4f" % (acc))
 
 # model save
-# model.save("cnn1d_model")
+model.save("../../pretrained/cnn1d_model")
+print('Model saved')
 
 # plot train process
 model_train_plot(history)
