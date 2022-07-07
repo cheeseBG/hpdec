@@ -6,7 +6,7 @@ from keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from keras.layers import Embedding, LSTM, GlobalMaxPooling1D, Dense, MaxPooling1D, BatchNormalization, Dropout
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from train import DataLoader
+from preprocessing import DataLoader
 from numpy import array
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -17,7 +17,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 TIMESTEMP = 70
 MAX_EPOCHS = 100
 
-dataPath = '../data/sample'
+dataPath = '../../data/sample'
 
 # Load Person Exist dataset
 # pe_df, npe_df = DataLoader().loadPEdata(dataPath, ['_30', '_31', '_33', '_34'])
@@ -40,11 +40,11 @@ csi_data, csi_label = csi_df.iloc[:, :-1], csi_df.iloc[:, -1]
 X_train, X_test, y_train, y_test = train_test_split(csi_data, csi_label, test_size=0.2, random_state=42, shuffle=True)
 X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=0.1, random_state=42, shuffle=True)
 
-# # Scaling
-# standardizer = StandardScaler()
-# X_train = standardizer.fit_transform(X_train)
-# X_valid = standardizer.transform(X_valid)
-# X_test = standardizer.transform(X_test)
+# Scaling
+standardizer = StandardScaler()
+X_train = standardizer.fit_transform(X_train)
+X_valid = standardizer.transform(X_valid)
+X_test = standardizer.transform(X_test)
 
 # Change to ndarray
 X_train = np.array(X_train)
