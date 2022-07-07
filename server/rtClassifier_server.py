@@ -26,13 +26,13 @@ def realTimeHPDec(share_value):
 
     # Load pretrained model
     print('======> Load model')
-    model = keras.models.load_model('./server/pretrained/continual_cnn1d_model')
+    model = keras.models.load_model('../pretrained/continual_cnn1d_model')
     model.summary()
     print('======> Success')
 
     # Load scaler
     print('======> Load scaler')
-    scaler = joblib.load('./server/pretrained/std_scaler.pkl')
+    scaler = joblib.load('../pretrained/std_scaler.pkl')
     print('======> Success')
 
     mac_dict = {}
