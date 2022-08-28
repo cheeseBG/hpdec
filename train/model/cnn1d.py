@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import time
 import pandas as pd
 import tensorflow as tf
 import joblib
@@ -80,6 +81,10 @@ joblib.dump(scaler, '../../pretrained/std_scaler.pkl')
 # X_train, y_train = X_train[:SAMPLE_NUM], y_train[:SAMPLE_NUM]
 # X_test, y_test = X_test[:int(SAMPLE_NUM * 0.2)], y_test[:int(SAMPLE_NUM * 0.2)]
 
+X_train = np.expand_dims(X_train, axis=2)
+X_valid = np.expand_dims(X_valid, axis=2)
+X_test = np.expand_dims(X_test, axis=2)
+
 print('Train: X shape: {}'.format(X_train.shape))
 print('Train: y shape: {}'.format(y_train.shape))
 print('Valid: X shape: {}'.format(X_valid.shape))
@@ -88,6 +93,7 @@ print('Test: X shape: {}'.format(X_test.shape))
 print('Test: y shape: {}'.format(y_test.shape))
 
 inp = (-1, X_train.shape[1], 1)
+print('Input shape: {}'.format(inp))
 
 # X_train = X_train.reshape(inp)  # LSTM은 input으로 3차원 (datasize, timestamp, feature)
 # X_valid = X_valid.reshape(inp)
@@ -96,9 +102,9 @@ inp = (-1, X_train.shape[1], 1)
 print('X reshape: {}'.format(X_train.shape))
 
 model = Sequential()
-model.add(Conv1D(128, 5, padding='valid', activation='relu', input_shape=(TIMESTEMP, 1)))
+model.add(Conv1D(128, 5, padding='same', activation='relu', input_shape=(TIMESTEMP, 1)))
 model.add(MaxPooling1D())
-model.add(Conv1D(128, 3, padding='valid', activation='relu'))
+model.add(Conv1D(128, 3, padding='same', activation='relu'))
 model.add(GlobalMaxPooling1D())
 model.add(Dense(128, activation='relu'))
 model.add(Dense(64, activation='relu'))
@@ -106,7 +112,7 @@ model.add(Dense(1, activation='sigmoid'))
 
 model.summary()
 
-learning_rate = 1e-3
+learning_rate = 1e-2
 decay = learning_rate / MAX_EPOCHS
 
 optimizer = Adam(
@@ -118,8 +124,13 @@ model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=[tf.keras
                                                                         tf.keras.metrics.Precision(name='precision'),
                                                                         tf.keras.metrics.Recall(name='recall')])
 
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=10)
-history = model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_valid, y_valid), callbacks=[es])
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
+
+start_time = time.time()
+history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_valid, y_valid), callbacks=[es])
+end_time = time.time()
+
+print(f"학습시간: {end_time - start_time:.5f} sec")
 
 acc = model.evaluate(X_test, y_test)[1]
 print("\n 테스트 정확도: %.4f" % (acc))

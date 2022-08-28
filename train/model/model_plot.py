@@ -20,9 +20,9 @@ def model_train_plot(history):
     acc_ax.plot(train_acc, 'b', label='train acc')
     acc_ax.plot(val_acc, 'g', label='val acc')
 
-    loss_ax.set_xlabel('epoch')
-    loss_ax.set_ylabel('loss')
-    acc_ax.set_ylabel('accuray')
+    loss_ax.set_xlabel('epoch', fontsize=20)
+    loss_ax.set_ylabel('loss', fontsize=20)
+    acc_ax.set_ylabel('accuray', fontsize=20)
 
     loss_ax.legend(loc='upper left')
     acc_ax.legend(loc='lower left')

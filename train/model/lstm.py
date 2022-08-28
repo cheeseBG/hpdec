@@ -1,4 +1,5 @@
 import os
+import time
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -14,8 +15,8 @@ from model_plot import model_train_plot
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-TIMESTEMP = 70
-MAX_EPOCHS = 100
+TIMESTEMP = 50
+MAX_EPOCHS = 50
 
 dataPath = '../../data/sample'
 
@@ -95,8 +96,13 @@ model.summary()
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-es = EarlyStopping(monitor='val_loss', mode='min', patience=20)
+es = EarlyStopping(monitor='val_loss', mode='min', patience=5)
+
+start_time = time.time()
 history = model.fit(X_train, y_train, epochs=MAX_EPOCHS, batch_size=32, validation_data=(X_valid, y_valid), callbacks=[es])
+end_time = time.time()
+
+print(f"학습시간: {end_time - start_time:.5f} sec")
 
 acc = model.evaluate(X_test, y_test)[1]
 print("\n 테스트 정확도: %.4f" % (acc))
