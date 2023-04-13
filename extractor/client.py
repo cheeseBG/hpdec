@@ -7,10 +7,12 @@ import os
 from datetime import datetime
 import time
 import socket
+from ..utils import get_config
 
+config = get_config('../config.yaml')
 # For send CSI data
-HOST = '192.168.0.191'
-PORT = 9009
+HOST = config['client_ip']
+PORT = config['client_port']
 
 
 # for sampling

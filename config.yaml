@@ -1,0 +1,8 @@
+# Server
+server_ip: '192.168.1.100'
+server_port: 9010
+
+# Client
+client_ip: '192.168.0.191'
+client_port: 9009
+client_mac_address: 'dca6328e1dcb'
