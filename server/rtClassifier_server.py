@@ -5,18 +5,22 @@ import numpy as np
 import keras
 import joblib
 import pandas as pd
+from ..utils import get_config
+
+config = get_config('../config.yaml')
 
 
 def realTimeHPDec(share_value):
-    HOST = '192.168.0.130'
-    PORT = 9010
+    HOST = config['server_ip']
+    PORT = config['server_port']
 
+    mac = config['client_mac_address']
     global P_COUNT
     P_COUNT = 0
     WINDOW_SIZE = 50
     SUB_NUM = '_30'
 
-    mac = 'dca6328e1dcb'
+
 
     columns = []
     for i in range(0, 64):
