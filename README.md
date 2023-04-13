@@ -2,7 +2,7 @@
 
 `hpdec` is a repository that enables real-time indoor human presence detection using Channel State Information (CSI) data obtained from a Raspberry Pi CSI extractor. 
 This repository was created to evaluate pre-trained model with data collected by [CALS](https://github.com/INCLab/CALS), and despite being a shallow model, achieved approximately 94% accuracy at window size 70.
-<p align="center"><img src="스크린샷 2023-04-13 오후 9 35 52" src="https://user-images.githubusercontent.com/51084152/231760347-248202ce-607d-46be-a7a0-379b31f719db.png"  width="500" height="350"/></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/51084152/231768156-e34982d7-57c4-49a2-b121-894b81fbac4a.png"  width="500" height="350"/></p>
 
 ## Prerequisites
 
@@ -60,5 +60,4 @@ client_mac_address: 'dca6328e1dcb'
 ## Referenced Projects
 
 This project takes inspiration from the following open-source project:
-
-1. **Nexmon**: The Nexmon project provides firmware patches for collecting CSI on Broadcom Wi-Fi chips. For more information about this project, please visit the [Nexmon GitHub repository](https://github.com/seemoo-lab/nexmon_csi).
+- **Nexmon**: The Nexmon project provides firmware patches for collecting CSI on Broadcom Wi-Fi chips. For more information about this project, please visit the [Nexmon GitHub repository](https://github.com/seemoo-lab/nexmon_csi).
