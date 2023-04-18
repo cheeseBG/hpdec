@@ -4,7 +4,7 @@ imutils
 joblib
 tensorflow
 keras
-numpy==1.21
+numpy==1.22.0
 pypcap
 dpkt
 keyboard
