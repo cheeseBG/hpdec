@@ -7,12 +7,11 @@ import os
 from datetime import datetime
 import time
 import socket
-from ..utils import get_config
+import pickle
 
-config = get_config('../config.yaml')
-# For send CSI data
-HOST = config['client_ip']
-PORT = config['client_port']
+# For send CSI data(server IP/Port)
+HOST = 'xxx.xxx.xxx.xxx'
+PORT = 1000
 
 
 # for sampling
@@ -67,12 +66,13 @@ def sniffing(nicname):
             csi_cmplx = np.fft.fftshift(
                 csi_np[:1, ::2] + 1.j * csi_np[:1, 1::2], axes=(1,)
             )
-
-            csi_data = str(mac) + ' '.join(list(csi_cmplx[0]))
-
+            
+            csi_amp = list(np.abs(csi_cmplx)[0])
+            csi_data = pickle.dumps(csi_amp)
+            
             try:
                 sock.connect((HOST, PORT))
-                sock.sendall(csi_data.encode())
+                sock.sendall(csi_data)
             finally:
                 sock.close()
 
